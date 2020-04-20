@@ -2,29 +2,16 @@
 #'
 #' Calculate the uncertainty in predictions from a fitted DSM, including uncertainty from the detection function.
 #'
-#' When we make predictions from a spatial model, we also want to know the uncertainty about that abundance estimate. Since density surface models are 2 (or more) stage models, we need to incorporate the uncertainty from the earlier stages (i.e. the detection function) into our "final" uncertainty estimate.
-#'
 #' This function will refit the spatial model but include the Hessian of the offset as an extra term. Variance estimates using this new model can then be used to calculate the variance of predicted abundance estimates which incorporate detection function uncertainty. Importantly this requires that if the detection function has covariates, then these do not vary within a segment (so, for example covariates like sex cannot be used).
-#'
-#' For more information on how to construct the prediction grid \code{data.frame}, \code{newdata}, see \code{\link{predict.dsm}}.
 #'
 #' This routine is only useful if a detection function with covariates has been used in the DSM.
 #'
 #' Note that we can use \code{var_type="Vc"} here (see \code{\link{gamObject}}), which is the variance-covariance matrix for the spatial model, corrected for smoothing parameter uncertainty. See Wood, Pya & S{\"a}fken (2016) for more information.
 #'
-#' Negative binomial models fitted using the \code{\link{nb}} family will give strange results (overly big variance estimates due to scale parameter issues) so \code{nb} models are automatically refitted with \code{\link{negbin}} (with a warning). It is probably worth refitting these models with \code{negbin} manually (perhaps giving a smallish range of possible values for the negative binomial parameter) to check that convergence was reached.
-#'
 #' @section Diagnostics:
 #' The summary output from the function includes a simply diagnostic that shows the average probability of detection from the "original" fitted model (the model supplied to this function; column \code{Fitted.model}) and the probability of detection from the refitted model (used for variance propagation; column \code{Refitted.model}) along with the standard error of the probability of detection from the fitted model (\code{Fitted.model.se}), at the unique values of any factor covariates used in the detection function (for continuous covariates the 5%, 50% and 95% quantiles are shown). If there are large differences between the probabilities of detection then there are potentially problems with the fitted model, the variance propagation or both. This can be because the fitted model does not account for enough of the variability in the data and in refitting the variance model accounts for this in the random effect.
 #'
-#'
-#' @return a list with elements
-#' \tabular{ll}{\code{old_model} \tab fitted model supplied to the function as \code{model}\cr
-#'              \code{refit} \tab refitted model object, with extra term\cr
-#'              \code{pred} \tab point estimates of predictions at \code{newdata}\cr
-#'              \code{var} \tab total variance calculated over all of \code{newdata}\cr
-#'              \code{ses} \tab standard error for each prediction cell in \code{newdata}\cr
-#'  }
+#' @return refitted model object, with extra term
 #' @author David L. Miller, based on code from Mark V. Bravington and Sharon L. Hedley.
 #' @references
 #' Williams, R., Hedley, S.L., Branch, T.A., Bravington, M.V., Zerbini, A.N. and Findlay, K.P. (2011). Chilean Blue Whales as a Case Study to Illustrate Methods to Estimate Abundance and Evaluate Conservation Status of Rare Species. Conservation Biology 25(3), 526-535.
@@ -33,33 +20,11 @@
 #'
 #'
 #' @param model a fitted \code{\link{dsm}}
-#' @param newdata the prediction grid
 #' @param trace for debugging, see how the scale parameter estimation is going
 #' @param var_type which variance-covariance matrix should be used (\code{"Vp"} for variance-covariance conditional on smoothing parameter(s), \code{"Vc"} for unconditional). See \code{\link{gamObject}} for an details/explanation. If in doubt, stick with the default, \code{"Vp"}.
 #' @export
 #'
-# @examples
-# \dontrun{
-# library(Distance)
-# library(dsm)
-#
-# # load the Gulf of Mexico dolphin data (see ?mexdolphins)
-# data(mexdolphins)
-#
-# # fit a detection function
-# df <- ds(distdata, max(distdata$distance),
-#          key = "hn", adjustment = NULL)
-#
-# # fit a simple smooth of x and y
-# mod1 <- dsm(count~s(x, y), df, segdata, obsdata, family=tw())
-#
-# # Calculate the variance
-# preddata$off.set <- preddata$area
-# mod1.varp <- dsm_varprop(mod1, preddata)
-# summary(mod1.varp)
-# # this will give a summary over the whole area in mexdolphins$preddata
-# }
-dsm_varprop1 <- function(model, trace=FALSE, var_type="Vp"){
+get_varprop_model <- function(model, trace=FALSE, var_type="Vp"){
 
   # die if the link isn't log
   if(model$family$link != "log"){

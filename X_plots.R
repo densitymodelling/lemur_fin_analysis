@@ -1,0 +1,85 @@
+# some plots for presentation
+
+load("RData/0_format_aux_data.RData")
+load("RData/1_model_and_data.RData")
+
+
+library(ggplot2)
+
+## plot raw data
+p_dat <- ggplot(fin) +
+  geom_polygon(aes(x=x, y=y), data=cce_poly, fill="#2c7fb8") +
+  geom_point(aes(y=mlat, x=mlon), size=0.4) +
+  geom_point(aes(y=mlat, x=mlon), colour="#edf8b1", size=0.6, data=subset(fin, count>0)) +
+  labs(x="", y="") +
+  coord_map() +
+  theme_minimal()
+print(p_dat)
+
+ggsave(p_dat, file="figures/rawdat.pdf", width=5, height=9)
+
+
+
+
+# plot mean predictions
+load("RData/4_process_uncertainty.RData")
+
+
+summary_predgrid$avv_d <- cut(summary_predgrid$avv, c(0,0.001,.0023,.0036,.0085,.036,1))
+
+
+p_pred <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +
+  geom_tile(aes(fill=avv_d)) +
+  scale_fill_viridis_d() +
+  labs(x="", y="", fill="Density") +
+  coord_map() +
+  theme_minimal()
+print(p_pred)
+
+ggsave(p_pred, file="figures/pred_d.pdf", width=7, height=9)
+
+
+# standard deviations
+summary_predgrid$sdd_d <- cut(summary_predgrid$sdd, c(0,0.001,.0023,.0036,.0085,.036,1, 10000))
+
+p_sd <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +
+  geom_tile(aes(fill=sdd_d)) +
+  scale_fill_viridis_d() +
+  labs(x="", y="", fill="sd") +
+  coord_map() +
+  theme_minimal()
+print(p_sd)
+
+ggsave(p_sd, file="figures/sd_d.pdf", width=7, height=9)
+
+
+
+# Nhat time series
+Nhat <- read.csv("out/Nhat_ests.csv")
+Nhat_fix <- boxplot.stats(as.matrix(Nhat))
+Nhat2 <- Nhat
+Nhat2[Nhat2>Nhat_fix$stats[5]] <- NA
+out_pred_files <- dir("out", pattern="_pred.csv", full.names = TRUE)
+dates <- sub("out/CCE_0.1deg_", "", out_pred_files)
+dates <- sub("_pred.csv","",dates)
+library(lubridate)
+dates <- ymd(dates)
+plot_Nhat <- data.frame(means = apply(Nhat2,1, median, na.rm=TRUE),
+                        upper = apply(Nhat2,1, quantile, probs=0.975, na.rm=TRUE),
+                        lower = apply(Nhat2,1, quantile, probs=0.025, na.rm=TRUE),
+                        date  = dates)
+
+plot_Nhat$year <- year(plot_Nhat$date)
+
+p_Nhat <- ggplot(plot_Nhat, aes(x=date))+
+  geom_line(aes(y=means)) +
+  geom_line(aes(y=upper), lty=2) +
+  geom_line(aes(y=lower), lty=2) +
+  facet_wrap(~year, scales = "free_x") +
+  theme_minimal()
+p_Nhat
+
+ggsave(p_Nhat, file="figures/Nhat.pdf", width=8, height=7)
+
+
+

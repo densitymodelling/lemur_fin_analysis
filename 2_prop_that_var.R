@@ -11,9 +11,7 @@ fake_pred_data$count <- NULL
 
 # use dsm_varprop1 to give us the refitted model that we want
 source("support_scripts/get_varprop_model.R")
-b_vp <- get_varprop_model(b, trace=TRUE, var_type="Vc")
-# this just returns the model, so add the data back in
-b_vp$data <- b$data
+b_vp <- get_varprop_model(b, g0=g0, trace=TRUE, var_type="Vc")
 
 # can save the checker info, but it's a mess
 # because there are so many covariate combinations

@@ -20,11 +20,12 @@
 #'
 #'
 #' @param model a fitted \code{\link{dsm}}
+#' @param g0 fixed g0 estimate, 1 if not used (uncertainty not taken into account)
 #' @param trace for debugging, see how the scale parameter estimation is going
 #' @param var_type which variance-covariance matrix should be used (\code{"Vp"} for variance-covariance conditional on smoothing parameter(s), \code{"Vc"} for unconditional). See \code{\link{gamObject}} for an details/explanation. If in doubt, stick with the default, \code{"Vp"}.
 #' @export
 #'
-get_varprop_model <- function(model, trace=FALSE, var_type="Vp"){
+get_varprop_model <- function(model, g0=1, trace=FALSE, var_type="Vp"){
 
   # die if the link isn't log
   if(model$family$link != "log"){
@@ -38,28 +39,6 @@ get_varprop_model <- function(model, trace=FALSE, var_type="Vp"){
 
   if(model$ddf$ds$aux$ddfobj$scale$formula=="~1"){
     stop("varprop doesn't work when there are no covariates in the detection function")
-  }
-
-  # negative binomial work-around, see:
-  #  https://github.com/DistanceDevelopment/dsm/issues/29
-  if(grepl("^Negative Binomial", model$family$family) &
-     any(class(model$family) == "extended.family")){
-    warning("Model was fitted using nb() family, refitting with negbin(). See ?dsm_varprop")
-
-    # extract fitted nb par
-    this_theta <- model$family$getTheta(TRUE)
-
-    # save ddf
-    this_ddf <- model$ddf
-
-    model_call <- as.list(model$call)
-    model_call[1] <- NULL
-    model_call$family <- negbin(this_theta)
-    model <- do.call("gam", model_call)
-
-    # rebuild model
-    model$ddf <- this_ddf
-    class(model) <- c("dsm", class(model))
   }
 
   # extract the link & invlink
@@ -80,7 +59,7 @@ get_varprop_model <- function(model, trace=FALSE, var_type="Vp"){
   ddf <- model$ddf
 
   # function to differentiate
-  mu_fn <- function(par, linkfn, ddf, data, ds_newdata){
+  mu_fn <- function(par, linkfn, ddf, data, ds_newdata, g0){
     # set the detection function parameters to be par
     ddf$par <- par
 
@@ -94,10 +73,10 @@ get_varprop_model <- function(model, trace=FALSE, var_type="Vp"){
     if(model$ddf$meta.data$point){
       # calculate log effective circle area
       # nb. predict() returns effective area of detection for points
-      ret <- linkfn(mu * data$Effort)
+      ret <- linkfn(mu * g0 * data$Effort)
     }else{
       # calculate log effective strip width
-      ret <- linkfn(2 * mu * data$Effort)
+      ret <- linkfn(2 * mu * g0 * data$Effort)
     }
 
 
@@ -126,7 +105,7 @@ get_varprop_model <- function(model, trace=FALSE, var_type="Vp"){
 
   # find the derivatives of log(mu)
   firstD <- dsm:::numderiv(mu_fn, ddf$par, linkfn=linkfn, ddf=ddf,
-                     data=model$data, ds_newdata=u_ds_newdata)
+                     data=model$data, ds_newdata=u_ds_newdata, g0=g0)
   if(!is.matrix(firstD)){
     firstD <- matrix(firstD, ncol=length(ddf$par))
   }
@@ -165,11 +144,16 @@ get_varprop_model <- function(model, trace=FALSE, var_type="Vp"){
 
   # set the trace on the scale parameter estimation
   this_call$scale.trace <- trace
+  
+  # is the scale estimated for this model?
+  this_call$scale.estimated <- model$scale.estimated
 
   ## refit the model
   gam.fixed.priors <- dsm:::gam.fixed.priors
   refit <- do.call("gam.fixed.priors", this_call)
 
+  refit$data <- dat
+  
   ## now do some predictions
 
   return(refit)

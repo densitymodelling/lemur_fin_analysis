@@ -32,6 +32,9 @@ prepare_preds <- function(pred_file, poly, pred_areas, covar_bnds=NULL){
   # set as NA grid cells that have covariate values outside of the
   # bounds in covar_bnds
   if(!is.null(covar_bnds)){
+    # get covariates that were in the model
+    covar_list <- attr(b_vp$terms, "term.labels")
+    covar_list <- covar_list[covar_list!="XX"]
     for(covar in names(predgrid)){
       this_bnd <- covar_bnds[[covar]]
       predgrid[[covar]][predgrid[[covar]] < this_bnd[1] |

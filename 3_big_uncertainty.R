@@ -83,7 +83,7 @@ big_uncertainty <- function(vp, pred_files, pred_areas, n_sims, poly, na_oob=FAL
 
 library(mgcv)
 
-# get th data from previous stages
+# get the data from previous stages
 load("RData/0_format_aux_data.RData")
 load("RData/1_model_and_data.RData")
 load("RData/2_prop_that_var.RData")

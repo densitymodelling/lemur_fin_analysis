@@ -37,7 +37,7 @@ for(out_pred_file in out_pred_files){
 
 
 # now get the summaries between time periods
-summary_predgrid$avv <- apply(avg, 1, median)
+summary_predgrid$avv <- apply(avg, 1, median, na.rm=TRUE)
 summary_predgrid$sdd <- apply(sd, 1, function(x) sqrt(sum(x^2)))
 
 

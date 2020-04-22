@@ -77,8 +77,13 @@ fin$dist <- NULL
 # extract the truncation
 width <- LTfitBest$meta.data$width
 
+
+# from Barlow and Forney (2007)
+g0 <- 0.921
+g0_CV <- 0.023
+
 # calculate the offset
-fin$off <- log(fin$p * 2 * width * fin$Effort)
+fin$off <- log(fin$p * g0 * 2 * width * fin$Effort)
 
 # some additional data cleaning here to make things easier later
 # rename the response
@@ -122,13 +127,16 @@ class(b) <- c("dsm", class(b))
 # how does the model do vs observed...
 # ... at different Beauforts
 # check once correct df used!
-obs_exp(b, "Beauf", c(0, 2, 3, 4, 5))
+obs_exp(b, "Beauf", c(0, 1, 2, 3, 4, 5))
 
 gam.check(b, rep=200)
 # look into QQ plot stuff?
+
+
+dsm::rqgam.check(b)
 
 # this model isn't perfect, but it'll do for illustration!
 
 
 # save what we need later
-save(b, fin, file="RData/1_model_and_data.RData")
+save(b, fin, g0, g0_CV, file="RData/1_model_and_data.RData")

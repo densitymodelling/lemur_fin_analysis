@@ -16,6 +16,7 @@ avg <- matrix(NA, nrow=nrow(summary_predgrid), ncol=length(out_pred_files))
 sd <- matrix(NA, nrow=nrow(summary_predgrid), ncol=length(out_pred_files))
 
 i<-1
+# loop over time periods
 for(out_pred_file in out_pred_files){
 
   # read-in and calculate the appropriate summaries
@@ -38,7 +39,7 @@ for(out_pred_file in out_pred_files){
 
 # now get the summaries between time periods
 summary_predgrid$avv <- apply(avg, 1, median, na.rm=TRUE)
-summary_predgrid$sdd <- apply(sd, 1, function(x) sqrt(sum(x^2)))
+summary_predgrid$sdd <- apply(sd, 1, function(x) sqrt(sum(x^2, na.rm=TRUE)))
 
 
 save(summary_predgrid, file="RData/4_process_uncertainty.RData")

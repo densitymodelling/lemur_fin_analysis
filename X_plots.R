@@ -6,16 +6,17 @@ load("RData/1_model_and_data.RData")
 library(ggplot2)
 
 ### plot raw data
-#p_dat <- ggplot(fin) +
-#  geom_polygon(aes(x=x, y=y), data=cce_poly, fill="#2c7fb8") +
-#  geom_point(aes(y=mlat, x=mlon), size=0.4) +
-#  geom_point(aes(y=mlat, x=mlon), colour="#edf8b1", size=0.6, data=subset(fin, count>0)) +
-#  labs(x="", y="") +
-#  coord_map() +
-#  theme_minimal()
-#print(p_dat)
-#
-#ggsave(p_dat, file="figures/rawdat.pdf", width=5, height=9)
+p_dat <- ggplot(fin) +
+  geom_polygon(aes(x=x, y=y), data=cce_poly) +
+  geom_tile(aes(y=mlat, x=mlon, fill=depth), data=depthpred) +
+  geom_point(aes(y=mlat, x=mlon), size=0.4) +
+  geom_point(aes(y=mlat, x=mlon), colour="#edf8b1", size=0.6, data=subset(fin, count>0)) +
+  labs(x="", y="") +
+  coord_map() +
+  theme_minimal()
+print(p_dat)
+
+ggsave(p_dat, file="figures/rawdat.pdf", width=5, height=9)
 
 
 
@@ -51,6 +52,28 @@ print(p_sd)
 
 ggsave(p_sd, file="figures/sd_d.pdf", width=7, height=9)
 
+# standard deviations with g0
+summary_predgrid$sdd_g0_d <- cut(summary_predgrid$sdd_g0, c(0,0.001,.0023,.0036,.0085,.036,1, 2))
+
+p_sd_g0 <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +
+  geom_tile(aes(fill=sdd_g0_d)) +
+  scale_fill_viridis_d() +
+  labs(x="", y="", fill="sd") +
+  coord_map() +
+  theme_minimal()
+print(p_sd_g0)
+
+ggsave(p_sd_g0, file="figures/sd_d_g0.pdf", width=7, height=9)
+
+summary_predgrid$cvd_d <- summary_predgrid$sdd/summary_predgrid$avv
+
+p_cv <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +
+  geom_tile(aes(fill=cvd_d)) +
+  scale_fill_viridis_c() +
+  labs(x="", y="", fill="cv") +
+  coord_map() +
+  theme_minimal()
+print(p_cv)
 
 
 # Nhat time series

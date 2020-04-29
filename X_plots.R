@@ -2,31 +2,13 @@
 
 load("RData/0_format_aux_data.RData")
 load("RData/1_model_and_data.RData")
+load("RData/4_process_uncertainty.RData")
 
 library(ggplot2)
 
-### plot raw data
-p_dat <- ggplot(fin) +
-  geom_polygon(aes(x=x, y=y), data=cce_poly) +
-  geom_tile(aes(y=mlat, x=mlon, fill=depth), data=depthpred) +
-  geom_point(aes(y=mlat, x=mlon), size=0.4) +
-  geom_point(aes(y=mlat, x=mlon), colour="#edf8b1", size=0.6, data=subset(fin, count>0)) +
-  labs(x="", y="") +
-  coord_map() +
-  theme_minimal()
-print(p_dat)
-
-ggsave(p_dat, file="figures/rawdat.pdf", width=5, height=9)
-
-
-
 
 # plot mean predictions
-load("RData/4_process_uncertainty.RData")
-
-
 summary_predgrid$avv_d <- cut(summary_predgrid$avv, c(0,0.001,.0023,.0036,.0085,.036,1))
-
 
 p_pred <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +
   geom_tile(aes(fill=avv_d)) +
@@ -65,6 +47,8 @@ print(p_sd_g0)
 
 ggsave(p_sd_g0, file="figures/sd_d_g0.pdf", width=7, height=9)
 
+
+# coefficients of variation
 summary_predgrid$cvd_d <- summary_predgrid$sdd/summary_predgrid$avv
 
 p_cv <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +

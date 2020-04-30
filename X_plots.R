@@ -83,6 +83,7 @@ p_Nhat <- ggplot(plot_Nhat, aes(x=date))+
   geom_line(aes(y=upper), lty=2) +
   geom_line(aes(y=lower), lty=2) +
   facet_wrap(~year, scales = "free_x") +
+  labs(x="Date", y="Abundance") +
   theme_minimal()
 p_Nhat
 

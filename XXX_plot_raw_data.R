@@ -1,29 +1,28 @@
-# download depth data from ERDDAP for publication
+# plot transects, observations, bathymetry
 
 library(ggplot2)
 library(mapdata)
 library(cmocean)
+library(mgcv)
 
-
-
-depthdat <- read.csv("data/Depth_ocean_CCEgrid.csv")
 
 load("RData/0_format_aux_data.RData")
 load("RData/1_model_and_data.RData")
 
+# setup depth data
+depthdat <- read.csv("data/Depth_ocean_CCEgrid.csv")
 x <- depthdat$lon180
 y <- depthdat$lat
-
-library(mgcv)
-
 ind <- inSide(cce_poly, x, y)
-
 depthdat <- depthdat[ind,]
 
+# setup palette for plotting
 pal <- cmocean('deep')(256)
 
+# map
 w <- map_data("worldHires", ylim = range(cce_poly$y), xlim = range(cce_poly$x))
 
+# plot bathymetry with effort and observations on map
 p_dat <- ggplot() +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
   geom_raster(data=depthdat, aes(x = lon180, y = lat, fill = Depth_ETOPO1),
@@ -37,5 +36,25 @@ p_dat <- ggplot() +
 print(p_dat)
 
 ggsave(p_dat, file="figures/rawdat.pdf", width=5, height=7)
+
+
+# make another plot for figure that has e.g. prediction grid
+
+source("support_scripts/prepare_preds.R")
+
+pp <- prepare_preds("data/CCE_0.1deg_2008-09-13.csv", cce_poly, pred_areas)
+
+# just plot mixed layer depth
+
+p_ild <- ggplot() +
+  geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
+  geom_tile(data=pp, aes(x = mlon, y = mlat, fill = ild))+
+  scale_fill_gradientn(colours=pal) +
+  theme_minimal() +
+  labs(x="", y="", fill="MLD") +
+  coord_fixed(1.3, ylim = range(cce_poly$y), xlim = range(cce_poly$x))
+print(p_ild)
+
+ggsave(p_ild, file="figures/raster_ex.pdf", width=5, height=7)
 
 

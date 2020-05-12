@@ -20,6 +20,8 @@ summary_predgrid <- summary_predgrid[!is.na(summary_predgrid$avv_d), ]
 p_pred <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
   geom_tile(aes(fill=avv_d)) +
+  geom_point(aes(y=mlat, x=mlon), data=subset(fin, count>0),
+             shape = 21, colour = "black", fill = "white", size=0.75) +
   scale_fill_viridis_d() +
   labs(x="", y="", fill="Density") +
   coord_map(ylim=range(summary_predgrid$mlat), xlim=range(summary_predgrid$mlon)) +
@@ -35,6 +37,8 @@ summary_predgrid$sdd_d <- cut(summary_predgrid$sdd, c(0,0.001,.0023,.0036,.0085,
 p_sd <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
   geom_tile(aes(fill=sdd_d)) +
+  geom_point(aes(y=mlat, x=mlon), data=subset(fin, count>0),
+             shape = 21, colour = "black", fill = "white", size=0.75) +
   scale_fill_viridis_d() +
   labs(x="", y="", fill="sd") +
   coord_map(ylim=range(summary_predgrid$mlat), xlim=range(summary_predgrid$mlon)) +
@@ -49,6 +53,8 @@ summary_predgrid$sdd_g0_d <- cut(summary_predgrid$sdd_g0, c(0,0.001,.0023,.0036,
 p_sd_g0 <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
   geom_tile(aes(fill=sdd_g0_d)) +
+  geom_point(aes(y=mlat, x=mlon), data=subset(fin, count>0),
+             shape = 21, colour = "black", fill = "white", size=0.75) +
   scale_fill_viridis_d() +
   labs(x="", y="", fill="sd") +
   coord_map(ylim=range(summary_predgrid$mlat), xlim=range(summary_predgrid$mlon)) +

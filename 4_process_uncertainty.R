@@ -1,5 +1,9 @@
 # process all those outputs!
 
+# using data.table::fread to make file reading faster
+library(data.table)
+
+
 source("support_scripts/prepare_preds.R")
 load("RData/0_format_aux_data.RData")
 load("RData/1_model_and_data.RData")
@@ -21,8 +25,9 @@ count <- rep(0, nrow(summary_predgrid))
 for(out_pred_file in out_pred_files){
 
   # read-in and calculate the appropriate summaries
-  this_pred <- read.table(out_pred_file, header=TRUE, sep=",")
+  this_pred <- fread(out_pred_file, header=TRUE, sep=",")
 
+  this_pred <- as.data.frame(this_pred)
   # running variance calculation a la Welford
   # loop over sims
   for(ii in 1:ncol(this_pred)){

@@ -26,7 +26,7 @@ p_pred <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +
   labs(x="", y="", fill="Density") +
   coord_map(ylim=range(summary_predgrid$mlat), xlim=range(summary_predgrid$mlon)) +
   theme_minimal()
-print(p_pred)
+#print(p_pred)
 
 ggsave(p_pred, file="figures/pred_d.pdf", width=7, height=9)
 
@@ -43,7 +43,7 @@ p_sd <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +
   labs(x="", y="", fill="sd") +
   coord_map(ylim=range(summary_predgrid$mlat), xlim=range(summary_predgrid$mlon)) +
   theme_minimal()
-print(p_sd)
+#print(p_sd)
 
 ggsave(p_sd, file="figures/sd_d.pdf", width=7, height=9)
 
@@ -59,7 +59,7 @@ p_sd_g0 <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +
   labs(x="", y="", fill="sd") +
   coord_map(ylim=range(summary_predgrid$mlat), xlim=range(summary_predgrid$mlon)) +
   theme_minimal()
-print(p_sd_g0)
+#print(p_sd_g0)
 
 ggsave(p_sd_g0, file="figures/sd_d_g0.pdf", width=7, height=9)
 

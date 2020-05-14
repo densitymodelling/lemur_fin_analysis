@@ -72,6 +72,8 @@ nadeem_comp <- ggplot(yearlies, aes(x=Year)) +
 
 print(nadeem_comp)
 
+ggsave(nadeem_comp, file="figures/nadeem_comp.pdf", width=8, height=6)
+
 
 
 

@@ -62,6 +62,9 @@ nadeem$model <- "Nadeem"
 nadeem$CV <- NULL
 nadeem$Mode <- NULL
 moore$model <- "Moore"
+moore$CV <- NULL
+moore$Mode <- NULL
+moore$perc20 <- NA
 
 yearlies <- rbind(nadeem, moore, as.data.frame(yearlies))
 
@@ -69,7 +72,7 @@ nadeem_comp <- ggplot(yearlies, aes(x=Year)) +
   geom_point(aes(y=Mean, colour=model)) +
   geom_point(aes(y=perc20, colour=model), pch=4, size=3) +
   geom_linerange(aes(ymin=lower95, ymax=upper95, colour=model)) +
-  coord_cartesian(xlim=c(1995, 2016)) +
+  #coord_cartesian(xlim=c(1995, 2016)) +
   theme_minimal()
 
 print(nadeem_comp)

@@ -16,7 +16,7 @@ summary_predgrid <- prepare_preds(pred_file, pred_areas=pred_areas, poly=cce_pol
 # get a list of all the output files
 out_pred_files <- dir("out", pattern="_pred.csv", full.names = TRUE)
 
-# setup for calculations
+# setup for calculations for Welford's variance estimation
 curr_mean <- rep(0, nrow(summary_predgrid))
 M2 <- rep(0, nrow(summary_predgrid))
 count <- rep(0, nrow(summary_predgrid))
@@ -38,6 +38,7 @@ for(out_pred_file in out_pred_files){
     na_ind <- is.na(this_sim)
     this_sim[na_ind] <- 0
     
+    # this implements Welford's method
     delta <- this_sim - curr_mean
     delta[na_ind] <- 0
     dc <- delta/count

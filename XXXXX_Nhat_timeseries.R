@@ -37,6 +37,7 @@ p_Nhat
 
 # Yearlies for comparison with Nadeem
 nadeem <- read.csv("data/nadeem2016.csv")
+moore <- read.csv("data/moore2011.csv")
 
 
 # Make a big old data.frame
@@ -60,8 +61,9 @@ yearlies$model <- "Miller"
 nadeem$model <- "Nadeem"
 nadeem$CV <- NULL
 nadeem$Mode <- NULL
+moore$model <- "Moore"
 
-yearlies <- rbind(nadeem, as.data.frame(yearlies))
+yearlies <- rbind(nadeem, moore, as.data.frame(yearlies))
 
 nadeem_comp <- ggplot(yearlies, aes(x=Year)) +
   geom_point(aes(y=Mean, colour=model)) +

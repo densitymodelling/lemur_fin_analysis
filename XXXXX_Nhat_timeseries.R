@@ -36,7 +36,8 @@ p_Nhat
 #ggsave(p_Nhat, file="figures/Nhat.pdf", width=8, height=7)
 
 # Yearlies for comparison with Nadeem
-nadeem <- read.csv("data/nadeem2016.csv")
+nadeem_barlow <- read.csv("data/nadeem2016_barlow.csv")
+nadeem_direct <- read.csv("data/nadeem2016_direct.csv")
 moore <- read.csv("data/moore2011.csv")
 
 
@@ -58,15 +59,18 @@ yearlies <- Nhat_long %>%
             upper95 = quantile(Abundance, 0.975))
 
 yearlies$model <- "Miller"
-nadeem$model <- "Nadeem"
-nadeem$CV <- NULL
-nadeem$Mode <- NULL
+nadeem_barlow$model <- "Nadeem (Barlow g(0))"
+nadeem_barlow$CV <- NULL
+nadeem_barlow$Mode <- NULL
+nadeem_direct$model <- "Nadeem (direct g(0))"
+nadeem_direct$CV <- NULL
+nadeem_direct$Mode <- NULL
 moore$model <- "Moore"
 moore$CV <- NULL
 moore$Mode <- NULL
 moore$perc20 <- NA
 
-yearlies <- rbind(nadeem, moore, as.data.frame(yearlies))
+yearlies <- rbind(nadeem_direct, nadeem_barlow, moore, as.data.frame(yearlies))
 
 nadeem_comp <- ggplot(yearlies, aes(x=Year)) +
   geom_point(aes(y=Mean, colour=model),position = position_dodge(width = 0.9)) +

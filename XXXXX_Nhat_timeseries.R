@@ -73,6 +73,7 @@ nadeem_comp <- ggplot(yearlies, aes(x=Year)) +
   geom_point(aes(y=perc20, colour=model), pch=4, size=3,position = position_dodge(width = 0.9)) +
   geom_linerange(aes(ymin=lower95, ymax=upper95, colour=model),position = position_dodge(width = 0.9)) +
   #coord_cartesian(xlim=c(1995, 2016)) +
+  scale_x_continuous(breaks=unique(yearlies$Year)) +
   theme_minimal()
 
 print(nadeem_comp)

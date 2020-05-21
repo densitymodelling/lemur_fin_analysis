@@ -36,7 +36,7 @@ p_Nhat
 #ggsave(p_Nhat, file="figures/Nhat.pdf", width=8, height=7)
 
 # Yearlies for comparison with Nadeem
-nadeem_barlow <- read.csv("data/nadeem2016_barlow.csv")
+#nadeem_barlow <- read.csv("data/nadeem2016_barlow.csv")
 nadeem_direct <- read.csv("data/nadeem2016_direct.csv")
 moore <- read.csv("data/moore2011.csv")
 
@@ -52,16 +52,16 @@ Nhat_long$Year <- year(Nhat_long$date)
 
 yearlies <- Nhat_long %>%
   group_by(Year) %>%
-  summarize(perc20 = quantile(Abundance, 0.2),
+  summarize(perc20  = quantile(Abundance, 0.2),
             Mean    = mean(Abundance),
             Median  = median(Abundance),
             lower95 = quantile(Abundance, 0.025),
             upper95 = quantile(Abundance, 0.975))
 
 yearlies$model <- "Miller"
-nadeem_barlow$model <- "Nadeem (Barlow g(0))"
-nadeem_barlow$CV <- NULL
-nadeem_barlow$Mode <- NULL
+#nadeem_barlow$model <- "Nadeem (Barlow g(0))"
+#nadeem_barlow$CV <- NULL
+#nadeem_barlow$Mode <- NULL
 nadeem_direct$model <- "Nadeem (direct g(0))"
 nadeem_direct$CV <- NULL
 nadeem_direct$Mode <- NULL
@@ -70,13 +70,15 @@ moore$CV <- NULL
 moore$Mode <- NULL
 moore$perc20 <- NA
 
-yearlies <- rbind(nadeem_direct, nadeem_barlow, moore, as.data.frame(yearlies))
+
+#yearlies <- rbind(nadeem_direct, nadeem_barlow, moore, as.data.frame(yearlies))
+yearlies <- rbind(nadeem_direct, moore, as.data.frame(yearlies))
 
 nadeem_comp <- ggplot(yearlies, aes(x=Year)) +
   geom_point(aes(y=Mean, colour=model),position = position_dodge(width = 0.9)) +
   geom_point(aes(y=perc20, colour=model), pch=4, size=3,position = position_dodge(width = 0.9)) +
   geom_linerange(aes(ymin=lower95, ymax=upper95, colour=model),position = position_dodge(width = 0.9)) +
-  #coord_cartesian(xlim=c(1995, 2016)) +
+  labs(x="Year", y="Abundance") +
   scale_x_continuous(breaks=unique(yearlies$Year)) +
   theme_minimal()
 

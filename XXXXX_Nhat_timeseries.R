@@ -58,14 +58,15 @@ yearlies <- Nhat_long %>%
             lower95 = quantile(Abundance, 0.025),
             upper95 = quantile(Abundance, 0.975))
 
-yearlies$model <- "Miller"
+yearlies$model <- "This article"
 #nadeem_barlow$model <- "Nadeem (Barlow g(0))"
 #nadeem_barlow$CV <- NULL
 #nadeem_barlow$Mode <- NULL
-nadeem_direct$model <- "Nadeem (direct g(0))"
+#nadeem_direct$model <- "Nadeem (direct g(0))"
+nadeem_direct$model <- "Nadeem et al. (2016)"
 nadeem_direct$CV <- NULL
 nadeem_direct$Mode <- NULL
-moore$model <- "Moore"
+moore$model <- "Moore and Barlow (2011)"
 moore$CV <- NULL
 moore$Mode <- NULL
 moore$perc20 <- NA
@@ -78,7 +79,7 @@ nadeem_comp <- ggplot(yearlies, aes(x=Year)) +
   geom_point(aes(y=Mean, colour=model),position = position_dodge(width = 0.9)) +
   geom_point(aes(y=perc20, colour=model), pch=4, size=3,position = position_dodge(width = 0.9)) +
   geom_linerange(aes(ymin=lower95, ymax=upper95, colour=model),position = position_dodge(width = 0.9)) +
-  labs(x="Year", y="Abundance") +
+  labs(x="Year", y="Abundance", fill="Estimate") +
   scale_x_continuous(breaks=unique(yearlies$Year)) +
   theme_minimal()
 

@@ -110,7 +110,7 @@ b <- gam(count ~ offset(off) +
                 s(sst_sd, bs = spline2use, k = maxdf) +
                 s(ssh, bs = spline2use, k = maxdf) +
                 s(ild, bs = spline2use, k = maxdf) +
-                s(year, bs = "cs", k = 5) +
+                s(year, bs = spline2use, k = 5) +
                 te(mlon, mlat, bs = spline2use, k = 6),
          family=tw(), method="REML", data=fin,
          control=list(keepData=TRUE))

@@ -52,11 +52,12 @@ p_Nhat <- ggplot(plot_Nhat, aes(x=month))+
   geom_point(aes(y=Abundance)) +
   facet_wrap(~year, nrow=1, scales = "free_x") +
   scale_x_continuous(breaks=6:12, labels=month.abb[6:12]) +
-  labs(x="Date", y="Abundance") +
-  theme_minimal()
+  labs(x="", y="Abundance") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle=35, hjust=1))
 #p_Nhat
 
-ggsave(p_Nhat, file="figures/Nhat.pdf", width=8, height=7)
+ggsave(p_Nhat, file="figures/Nhat.pdf", width=10)
 
 
 p_violin <- ggplot(Nhat, aes(x=month(date))) +

@@ -50,7 +50,7 @@ p_Nhat <- ggplot(plot_Nhat, aes(x=month))+
 #  geom_line(aes(y=Abundance)) +
   geom_linerange(aes(ymax=upper, ymin=lower)) +
   geom_point(aes(y=Abundance)) +
-  facet_wrap(~year, scales = "free_x") +
+  facet_wrap(~year, nrow=1, scales = "free_x") +
   scale_x_continuous(breaks=6:12, labels=month.abb[6:12]) +
   labs(x="Date", y="Abundance") +
   theme_minimal()
@@ -79,7 +79,6 @@ moore <- read.csv("data/moore2011.csv")
 library(tidyr)
 library(dplyr)
 
-Nhat$date <- dates
 Nhat_long<- gather(Nhat, "simulation", "Abundance", -date)
 Nhat_long$Year <- year(Nhat_long$date)
 

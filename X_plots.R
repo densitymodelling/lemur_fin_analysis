@@ -57,7 +57,7 @@ p_sd_g0 <- ggplot(summary_predgrid_all, aes(y=mlat, x=mlon)) +
   geom_point(aes(y=mlat, x=mlon), data=subset(fin, count>0),
              shape = 21, colour = "black", fill = "white", size=0.75) +
   scale_fill_viridis_d() +
-  labs(x="", y="", fill="sd") +
+  labs(x="", y="", fill="Standard\ndeviation") +
   coord_map(ylim=range(summary_predgrid_all$mlat), xlim=range(summary_predgrid_all$mlon)) +
   theme_minimal()
 #print(p_sd_g0)
@@ -106,9 +106,10 @@ p_yearly <- ggplot(summary_predgrid_yearly, aes(y=mlat, x=mlon)) +
   facet_grid(vars(name), vars(year)) +
   labs(x="", y="", fill="Value") +
   coord_map(ylim=range(summary_predgrid_yearly$mlat), xlim=range(summary_predgrid_yearly$mlon)) +
-  theme_minimal()
+  theme_minimal() +
+  theme(legend.position = "bottom")
 #print(p_yearly)
 
-ggsave(p_yearly, file="figures/yearlies.pdf", width=7, height=9)
+ggsave(p_yearly, file="figures/yearlies.pdf", width=10)
 
 

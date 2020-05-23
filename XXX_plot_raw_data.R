@@ -25,17 +25,16 @@ w <- map_data("worldHires", ylim = range(cce_poly$y), xlim = range(cce_poly$x))
 # plot bathymetry with effort and observations on map
 p_dat <- ggplot() +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
-  geom_raster(data=depthdat, aes(x = lon180, y = lat, fill = Depth_ETOPO1),
-              interpolate = FALSE) +
+  geom_tile(data=depthdat, aes(x = lon180, y = lat, fill = Depth_ETOPO1)) +
   scale_fill_gradientn(colours=pal) +
   geom_point(aes(y=mlat, x=mlon), size=0.2, data=fin) +
   geom_point(aes(y=mlat, x=mlon), colour="#edf8b1", size=0.3, data=subset(fin, count>0)) +
   theme_minimal() +
   labs(x="", y="", fill="Depth") +
-  coord_fixed(1.3, ylim = range(cce_poly$y), xlim = range(cce_poly$x))
-print(p_dat)
+  coord_map(ylim = c(30.2, 48.0), xlim = c(-131.0, -117.3))
+#print(p_dat)
 
-ggsave(p_dat, file="figures/rawdat.pdf", width=5, height=7)
+ggsave(p_dat, file="figures/rawdat.pdf", width=7, height=9)
 
 
 # make another plot for figure that has e.g. prediction grid

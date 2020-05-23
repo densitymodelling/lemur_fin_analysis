@@ -99,11 +99,17 @@ n_sims <- 200
 
 
 # run every third day...
-day_ind <- seq(1, length(pred_files), by=3)
-pred_files <- pred_files[day_ind]
+#day_ind <- seq(1, length(pred_files), by=3)
+#pred_files <- pred_files[day_ind]
 
+# start timer
+start_time <- Sys.time()
 # do the work!
 # things get saved to csv files in various places
 big_uncertainty(b_vp, pred_files, pred_areas, n_sims, cce_poly, na_oob=TRUE, quiet=FALSE)
 
 
+# end timer
+end_time <- Sys.time()
+
+print(end_time - start_time)

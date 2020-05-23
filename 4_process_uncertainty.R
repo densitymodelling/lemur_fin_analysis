@@ -70,7 +70,7 @@ summary_predgrid_all <- welford_mean_var(all_out_files, summary_predgrid)
 # roll in the g0 CV per cell
 summary_predgrid_all$sdd_g0 <- sqrt((summary_predgrid_all$sdd/
                                      summary_predgrid_all$avv)^2 +
-                                    g0_CV^2)*summary_predgrid$avv
+                                    g0_CV^2)*summary_predgrid_all$avv
 
 ## now calculate for each year
 summary_predgrid_yearly <- c()
@@ -90,10 +90,10 @@ for(year in c(1996, 2001, 2005, 2008, 2014)){
                                    summary_predgrid_tmp)
 }
 
-# roll in the g0 CV per cell
-summary_predgrid_all$sdd_g0 <- sqrt((summary_predgrid_all$sdd/
-                                     summary_predgrid_all$avv)^2 +
-                                    g0_CV^2)*summary_predgrid$avv
+# roll in the g0 CV per cell using the delta method
+summary_predgrid_yearly$sdd_g0 <- sqrt((summary_predgrid_yearly$sdd/
+                                     summary_predgrid_yearly$avv)^2 +
+                                    g0_CV^2)*summary_predgrid_yearly$avv
 
 
 # save that output

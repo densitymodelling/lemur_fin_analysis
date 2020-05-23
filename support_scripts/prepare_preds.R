@@ -3,9 +3,15 @@
 #  2. offset is 1
 #  3. prediction cell area is in $area
 #  4. all cells are inside poly
+
+library(data.table)
+
 prepare_preds <- function(pred_file, poly, pred_areas, covar_bnds=NULL){
   # think about predictions!
-  predgrid <- read.csv(pred_file)
+  #predgrid <- read.csv(pred_file)
+  predgrid <- data.table::fread(pred_file, header=TRUE, sep=",")
+  predgrid <- as.data.frame(predgrid)
+  
   # rename the columns
   names(predgrid) <- c("mlat", "mlon", "sst", "sst_sd", "ssh", "ssh_sd", "ild", "ild_sd")
 

@@ -113,13 +113,13 @@ nadeem_comp <- ggplot(yearlies, aes(x=Year)) +
   geom_point(aes(y=Mean, colour=model),position = position_dodge(width = 0.9)) +
   geom_point(aes(y=perc20, colour=model), pch=4, size=3,position = position_dodge(width = 0.9)) +
   geom_linerange(aes(ymin=lower95, ymax=upper95, colour=model),position = position_dodge(width = 0.9)) +
-  labs(x="Year", y="Abundance", fill="Estimate") +
+  labs(x="Year", y="Abundance", fill="Estimate", colour="Model") +
   scale_x_continuous(breaks=unique(yearlies$Year)) +
   theme_minimal()
 
 #print(nadeem_comp)
 
-ggsave(nadeem_comp, file="figures/nadeem_comp.pdf", width=8, height=6)
+ggsave(nadeem_comp, file="figures/nadeem_comp.pdf", width=8, height=5)
 
 
 

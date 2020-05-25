@@ -23,9 +23,7 @@ dates <- ymd(dates)
 
 Nhat <- read.csv("out/Nhat_ests.csv")
 Nhat$X <- NULL
-#Nhat_fix <- boxplot.stats(as.matrix(Nhat))
 Nhat2 <- Nhat
-#Nhat2[Nhat2>Nhat_fix$stats[5]] <- NA
 
 
 Nhat$date <- dates
@@ -41,9 +39,14 @@ plot_Nhat <- Nhat %>%
   group_by(year = year(date), month=month(date)) %>%
   # make the summaries
   summarize(Abundance = mean(value, na.rm=TRUE),
-            upper     = quantile(value, probs=0.975, na.rm=TRUE),
-            lower     = quantile(value, probs=0.025, na.rm=TRUE))
-
+            se        = sqrt(var(value, na.rm=TRUE))) %>%
+            #upper     = quantile(value, probs=0.975, na.rm=TRUE),
+            #lower     = quantile(value, probs=0.025, na.rm=TRUE))
+  mutate(CV    = sqrt((se/Abundance)^2 + g0_CV^2),
+         lower = qlnorm(0.05/2, log(Abundance) - 0.5*log(CV^2+1),
+                        sqrt(log(CV^2+1))),
+         upper = qlnorm(1-0.05/2, log(Abundance) - 0.5*log(CV^2+1),
+                        sqrt(log(CV^2+1))))
 
 p_Nhat <- ggplot(plot_Nhat, aes(x=month))+
 #  geom_ribbon(aes(ymax=upper, ymin=lower), fill="lightgrey") +

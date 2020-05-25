@@ -110,6 +110,6 @@ p_yearly <- ggplot(summary_predgrid_yearly, aes(y=mlat, x=mlon)) +
   theme(legend.position = "bottom")
 #print(p_yearly)
 
-ggsave(p_yearly, file="figures/yearlies.pdf", width=10)
+ggsave(p_yearly, file="figures/yearlies.pdf", width=10, height=9)
 
 

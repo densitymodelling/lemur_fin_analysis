@@ -67,6 +67,7 @@ predplot <- dsm::plot_pred_by_term(b_vp, summary_predgrid,
   scale_fill_viridis_c() +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
   coord_map(ylim=range(summary_predgrid$mlat), xlim=range(summary_predgrid$mlon)) +
+  labs(x="", y="") +
   theme_minimal()
 print(predplot)
 

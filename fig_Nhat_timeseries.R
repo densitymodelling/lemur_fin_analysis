@@ -63,15 +63,6 @@ p_Nhat <- ggplot(plot_Nhat, aes(x=month))+
 ggsave(p_Nhat, file="figures/Nhat.pdf", width=10)
 
 
-p_violin <- ggplot(Nhat, aes(x=month(date))) +
-  geom_violin(aes(y=value, group=month(date))) +
-  facet_wrap(~year(date), scales = "free_x") +
-  scale_x_continuous(breaks=6:12, labels=month.abb[6:12]) +
-  labs(x="Date", y="Abundance") +
-  theme_minimal()
-#p_violin
-
-ggsave(p_violin, file="figures/Nhat_violin.pdf", width=8, height=7)
 
 # Yearlies for comparison with Nadeem
 #nadeem_barlow <- read.csv("data/nadeem2016_barlow.csv")
@@ -114,7 +105,7 @@ yearlies <- rbind(nadeem_direct, moore, as.data.frame(yearlies))
 
 nadeem_comp <- ggplot(yearlies, aes(x=Year)) +
   geom_point(aes(y=Mean, colour=model),position = position_dodge(width = 0.9)) +
-  geom_point(aes(y=perc20, colour=model), pch=4, size=3,position = position_dodge(width = 0.9)) +
+#  geom_point(aes(y=perc20, colour=model), pch=4, size=3,position = position_dodge(width = 0.9)) +
   geom_linerange(aes(ymin=lower95, ymax=upper95, colour=model),position = position_dodge(width = 0.9)) +
   labs(x="Year", y="Abundance", fill="Estimate", colour="Model") +
   scale_x_continuous(breaks=unique(yearlies$Year)) +

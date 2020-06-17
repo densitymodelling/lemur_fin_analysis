@@ -22,3 +22,6 @@ plot(b_vp, select=6, scheme=2, asp=1, xlab="Longitude", ylab="Latitude",
 
 # close device, writing the PDF
 dev.off()
+
+
+

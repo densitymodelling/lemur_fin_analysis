@@ -67,11 +67,52 @@ predplot <- dsm::plot_pred_by_term(b_vp, summary_predgrid,
   scale_fill_viridis_c() +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
   coord_map(ylim=range(summary_predgrid$mlat), xlim=range(summary_predgrid$mlon)) +
-  labs(x="", y="") +
+  labs(x="", y="", fill="Linear\npredictor\nvalue") +
+  facet_wrap(~term, nrow=2) +
   theme_minimal()
-print(predplot)
 
-ggsave(predplot, file="figures/lpplot-2008-06-26.pdf", width=10, height=10)
+# fiddle with the ggplot2 object for plotting
+predplot$data$term[predplot$data$term=="s(sst)"] <- "Sea surface temperature (C)"
+predplot$data$term[predplot$data$term=="s(sst_sd)"] <- "Standard deviation of SST (C)"
+predplot$data$term[predplot$data$term=="s(ssh)"] <- "Sea surface height (m)"
+predplot$data$term[predplot$data$term=="s(ild)"] <- "Mixed layer depth"
+predplot$data$term[predplot$data$term=="s(mlon,mlat)"] <- "Space"
+predplot$data$term[predplot$data$term=="s(year)"] <- "XXX"
+
+# this is absolutely heinous, I apologize
+library(gtable)
+library(grid)
+library(gridExtra)
+g1 <- ggplotGrob(predplot)
+# To show the layout:
+gtable_show_layout(g1)
+g1$layout
+pos <- grep(pattern = "panel-4-1", g1$layout$name)
+g1$grobs[[pos]] <- nullGrob()
+pos <- grep(pattern = "panel-4-2", g1$layout$name)
+g1$grobs[[pos]] <- nullGrob()
+pos <- grep(pattern = "panel-2-2", g1$layout$name)
+g1$grobs[[pos]] <- nullGrob()
+pos <- grep(pattern = "strip-t-2-2", g1$layout$name)
+g1$grobs[[pos]] <- nullGrob()
+pos <- grep(pattern = "strip-t-3-2", g1$layout$name)
+g1$grobs[[pos]] <- nullGrob()
+pos <- grep(pattern = "axis-b-2-2", g1$layout$name)
+pos2 <- grep(pattern = "axis-b-2-1", g1$layout$name)
+g1$grobs[[pos2]] <- g1$grobs[[pos]]
+pos2 <- grep(pattern = "axis-b-3-1", g1$layout$name)
+g1$grobs[[pos2]] <- g1$grobs[[pos]]
+pos <- grep(pattern = "axis-b-2-2", g1$layout$name)
+g1$grobs[[pos]] <- nullGrob()
+pos <- grep(pattern = "axis-b-3-2", g1$layout$name)
+g1$grobs[[pos]] <- nullGrob()
+pos <- grep(pattern = "axis-b-4-2", g1$layout$name)
+g1$grobs[[pos]] <- nullGrob()
+# what does that actually look like?
+#grid.newpage()
+#grid.draw(g1)
+
+ggsave(g1, file="figures/lpplot-2008-06-26.pdf", width=10, height=10)
 
 p_ild <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +

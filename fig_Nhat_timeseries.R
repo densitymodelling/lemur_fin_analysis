@@ -57,8 +57,9 @@ p_Nhat <- ggplot(plot_Nhat, aes(x=month))+
   scale_x_continuous(breaks=6:12, labels=month.abb[6:12]) +
   labs(x="", y="Abundance") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle=35, hjust=1))
-#p_Nhat
+  theme(axis.text.x = element_text(angle=35, hjust=1),
+        panel.border = element_rect(colour="black", fill=NA))
+p_Nhat
 
 ggsave(p_Nhat, file="figures/Nhat.pdf", width=10)
 

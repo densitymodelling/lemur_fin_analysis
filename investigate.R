@@ -62,8 +62,23 @@ p_pred <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +
 library(dsm)
 load("RData/2_prop_that_var.RData")
 summary_predgrid$XX <- matrix(0, nrow=nrow(summary_predgrid), ncol=18)
-predplot <- dsm::plot_pred_by_term(b_vp, summary_predgrid,
-                                   c("mlon", "mlat")) +
+
+# adapted from dsm::plot_pred_by_term
+plot_predgrid <- summary_predgrid
+plot_predgrid$off <- 0
+preds <- predict(b_vp, plot_predgrid, type = "terms")
+preds <- preds[, -c(1, 6)]
+plot_data <- c()
+for (col in colnames(preds)) {
+  plot_data <- rbind(plot_data,
+                     cbind.data.frame(plot_predgrid, 
+                                      value = preds[, col], term = col))
+}
+
+# construct the plot
+predplot <- ggplot(plot_data) +
+  geom_tile(aes(x = mlon, y = mlat, fill = value)) +
+  facet_wrap(~term) +
   scale_fill_viridis_c() +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
   coord_map(ylim=range(summary_predgrid$mlat), xlim=range(summary_predgrid$mlon)) +
@@ -77,42 +92,8 @@ predplot$data$term[predplot$data$term=="s(sst_sd)"] <- "Standard deviation of SS
 predplot$data$term[predplot$data$term=="s(ssh)"] <- "Sea surface height (m)"
 predplot$data$term[predplot$data$term=="s(ild)"] <- "Mixed layer depth"
 predplot$data$term[predplot$data$term=="s(mlon,mlat)"] <- "Space"
-predplot$data$term[predplot$data$term=="s(year)"] <- "XXX"
 
-# this is absolutely heinous, I apologize
-library(gtable)
-library(grid)
-library(gridExtra)
-g1 <- ggplotGrob(predplot)
-# To show the layout:
-gtable_show_layout(g1)
-g1$layout
-pos <- grep(pattern = "panel-4-1", g1$layout$name)
-g1$grobs[[pos]] <- nullGrob()
-pos <- grep(pattern = "panel-4-2", g1$layout$name)
-g1$grobs[[pos]] <- nullGrob()
-pos <- grep(pattern = "panel-2-2", g1$layout$name)
-g1$grobs[[pos]] <- nullGrob()
-pos <- grep(pattern = "strip-t-2-2", g1$layout$name)
-g1$grobs[[pos]] <- nullGrob()
-pos <- grep(pattern = "strip-t-3-2", g1$layout$name)
-g1$grobs[[pos]] <- nullGrob()
-pos <- grep(pattern = "axis-b-2-2", g1$layout$name)
-pos2 <- grep(pattern = "axis-b-2-1", g1$layout$name)
-g1$grobs[[pos2]] <- g1$grobs[[pos]]
-pos2 <- grep(pattern = "axis-b-3-1", g1$layout$name)
-g1$grobs[[pos2]] <- g1$grobs[[pos]]
-pos <- grep(pattern = "axis-b-2-2", g1$layout$name)
-g1$grobs[[pos]] <- nullGrob()
-pos <- grep(pattern = "axis-b-3-2", g1$layout$name)
-g1$grobs[[pos]] <- nullGrob()
-pos <- grep(pattern = "axis-b-4-2", g1$layout$name)
-g1$grobs[[pos]] <- nullGrob()
-# what does that actually look like?
-#grid.newpage()
-#grid.draw(g1)
-
-ggsave(g1, file="figures/lpplot-2008-06-26.pdf", width=10, height=10)
+ggsave(predplot, file="figures/lpplot-2008-06-26.pdf", width=10, height=10)
 
 p_ild <- ggplot(summary_predgrid, aes(y=mlat, x=mlon)) +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +

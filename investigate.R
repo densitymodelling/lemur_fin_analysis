@@ -87,11 +87,11 @@ predplot <- ggplot(plot_data) +
   theme_minimal()
 
 # fiddle with the ggplot2 object for plotting
-predplot$data$term[predplot$data$term=="s(sst)"] <- "Sea surface temperature (C)"
-predplot$data$term[predplot$data$term=="s(sst_sd)"] <- "Standard deviation of SST (C)"
-predplot$data$term[predplot$data$term=="s(ssh)"] <- "Sea surface height (m)"
+predplot$data$term[predplot$data$term=="s(sst)"] <- "Sea surface temperature"
+predplot$data$term[predplot$data$term=="s(sst_sd)"] <- "Standard deviation of SST"
+predplot$data$term[predplot$data$term=="s(ssh)"] <- "Sea surface height"
 predplot$data$term[predplot$data$term=="s(ild)"] <- "Mixed layer depth"
-predplot$data$term[predplot$data$term=="s(mlon,mlat)"] <- "Space"
+predplot$data$term[predplot$data$term=="te(mlon,mlat)"] <- "Space"
 
 ggsave(predplot, file="figures/lpplot-2008-06-26.pdf", width=10, height=10)
 

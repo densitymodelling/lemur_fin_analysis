@@ -26,14 +26,16 @@ fix_Beauf <- quantile(fin$Beauf, 0.5)
 
 # by ship
 plot(fin_ddf, showpoints=FALSE, subset=SppMax=="074")
-plot_df <- expand.grid(Ship = unique(fin_ddf$data$Ship),
+plot_df <- expand.grid(Ship = c("DSJ", "MAC", "Mc2"),#unique(fin_ddf$data$Ship),
                        Vis  = fix_Vis,
                        LnTotSS  = fix_LnTotSS,
                        Beauf  = fix_Beauf)
 plot_df$SppMax <- "074"
 pal <- brewer.pal(6, "Set1")
 add_df_covar_line(fin_ddf, plot_df, col=pal, lty=1)
-legend(x="topright", legend=plot_df$Ship, col=pal, lty=1, title="Vessel", inset=c(0.05, 0.05))
+legend(x="topright", #legend=plot_df$Ship,
+       legend=c("David Starr Jordan", "MAC", "Mc2"),
+       col=pal, lty=1, title="Vessel", inset=c(0.05, 0.05))
 
 
 # by visibility

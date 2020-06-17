@@ -1,4 +1,4 @@
-# some plots for presentation
+# plot maps of density and uncertainty
 
 load("RData/0_format_aux_data.RData")
 load("RData/1_model_and_data.RData")

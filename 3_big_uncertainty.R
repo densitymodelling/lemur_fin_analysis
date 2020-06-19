@@ -1,4 +1,4 @@
-# actually do the uncertainty bit
+# simulate multiple relisations
 # this happens in a the function below that consists of 2 loops
 # 1. (outer) over the prediction grids
 # 2. (inner) model posterior simulations
@@ -112,4 +112,5 @@ big_uncertainty(b_vp, pred_files, pred_areas, n_sims, cce_poly, na_oob=TRUE, qui
 # end timer
 end_time <- Sys.time()
 
+# how long did that take?
 print(end_time - start_time)

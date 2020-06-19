@@ -2,7 +2,7 @@
 
 # get the CCE polygon
 cce_poly <- read.csv("data/CCE_StudyArea_noIslands_noBays.csv")
-# long on the same scale as the data
+# longitude on the same scale as the data
 cce_poly$x <- cce_poly$x-360
 
 # load the prediction grid areas

@@ -77,8 +77,7 @@ fin$dist <- NULL
 # extract the truncation
 width <- LTfitBest$meta.data$width
 
-
-# from Barlow and Forney (2007)
+# detection on the trackline, taken from Barlow and Forney (2007)
 g0 <- 0.921
 g0_CV <- 0.023
 
@@ -94,8 +93,6 @@ fin$ANI.74 <- NULL
 fin$cruiseNum <- fin$efftyp <- fin$aveBF <-
 fin$Idnum <- fin$InCCE <- fin$aveSwell <-
 fin$aveVis <- NULL
-# dsm only knows about what to do with p not ESW
-#fin$ESW.74 <- NULL
 
 # use Sample.Label
 fin$Sample.Label <- fin$segnum
@@ -106,7 +103,7 @@ fin$segnum <- NULL
 maxdf <- 10
 spline2use <- "ts"
 b <- gam(count ~ offset(off) +
-                s(sst, bs = spline2use, k = maxdf) + 
+                s(sst, bs = spline2use, k = maxdf) +
                 s(sst_sd, bs = spline2use, k = maxdf) +
                 s(ssh, bs = spline2use, k = maxdf) +
                 s(ild, bs = spline2use, k = maxdf) +
@@ -114,29 +111,23 @@ b <- gam(count ~ offset(off) +
                 te(mlon, mlat, bs = spline2use, k = 6),
          family=tw(), method="REML", data=fin,
          control=list(keepData=TRUE))
-# having keepData here is essential for varprop!
+# having keepData here is essential for varprop later!
 
 summary(b)
 
 # attach the detection function into the gam object
 b$ddf <- LTfitBest
-# make it a dsm object
+# make it a dsm object so we can use dsm functions later
 class(b) <- c("dsm", class(b))
 
 
 # how does the model do vs observed...
 # ... at different Beauforts
-# check once correct df used!
 obs_exp(b, "Beauf", c(0, 1, 2, 3, 4, 5))
-
-gam.check(b, rep=200)
-# look into QQ plot stuff?
-
-
+# quantile-quantile plot
+qq.gam(b, rep=200)
+# randomised quantile residuals vs linear predictor
 dsm::rqgam.check(b)
-
-# this model isn't perfect, but it'll do for illustration!
-
 
 # save what we need later
 save(b, fin, g0, g0_CV, file="RData/1_model_and_data.RData")

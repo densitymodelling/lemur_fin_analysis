@@ -1,4 +1,8 @@
-# process all those outputs!
+# process all those outputs
+
+# take each file and calulate the running mean and variance using the method
+# of Welford
+# https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_online_algorithm
 
 # using data.table::fread to make file reading faster
 library(data.table)
@@ -11,8 +15,6 @@ load("RData/1_model_and_data.RData")
 # get one prediction grid to work from
 pred_file <- dir("data/roms_grids", full.names = TRUE)[1]
 summary_predgrid <- prepare_preds(pred_file, pred_areas=pred_areas, poly=cce_poly)
-
-
 
 # function to calculate variance using Welford's method
 # reads in each file named in out_files
@@ -40,7 +42,6 @@ welford_mean_var <- function(out_files, summary_predgrid){
       this_sim[na_ind] <- 0
 
       # this implements Welford's method
-      # see e.g. https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_online_algorithm
       delta <- this_sim - curr_mean
       delta[na_ind] <- 0
       dc <- delta/count
@@ -94,7 +95,6 @@ for(year in c(1996, 2001, 2005, 2008, 2014)){
 summary_predgrid_yearly$sdd_g0 <- sqrt((summary_predgrid_yearly$sdd/
                                      summary_predgrid_yearly$avv)^2 +
                                     g0_CV^2)*summary_predgrid_yearly$avv
-
 
 # save that output
 save(summary_predgrid_all,

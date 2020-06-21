@@ -38,6 +38,6 @@ Worth running the following before running anything above!
 ```r
 install.packages(c("mgcv", "Distance", "dsm", "data.table", "lubridate",
                    "patchwork", "ggplot2", "mapdata", "tidyr", "dplyr",
-                   "mrds", "RColorBrewer", "cmocean"))
+                   "mrds", "RColorBrewer", "cmocean", "mapproj"))
 ```
 

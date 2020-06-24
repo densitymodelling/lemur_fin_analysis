@@ -41,12 +41,12 @@ p_sd <- ggplot(summary_predgrid_all, aes(y=mlat, x=mlon)) +
   geom_point(aes(y=mlat, x=mlon), data=subset(fin, count>0),
              shape = 21, colour = "black", fill = "white", size=0.75) +
   scale_fill_viridis_d() +
-  labs(x="", y="", fill="sd") +
+  labs(x="", y="", fill="Standard\nerror") +
   coord_map(ylim=range(summary_predgrid_all$mlat), xlim=range(summary_predgrid_all$mlon)) +
   theme_minimal()
 #print(p_sd)
 
-ggsave(p_sd, file="figures/sd_d.pdf", width=7, height=9)
+ggsave(p_sd, file="figures/unc_d.pdf", width=7, height=9)
 
 # standard deviations with g0
 summary_predgrid_all$sdd_g0_d <- cut(summary_predgrid_all$sdd_g0, c(0,0.001,.0023,.0036,.0085,.036,1, 2))
@@ -57,12 +57,12 @@ p_sd_g0 <- ggplot(summary_predgrid_all, aes(y=mlat, x=mlon)) +
   geom_point(aes(y=mlat, x=mlon), data=subset(fin, count>0),
              shape = 21, colour = "black", fill = "white", size=0.75) +
   scale_fill_viridis_d() +
-  labs(x="", y="", fill="Standard\ndeviation") +
+  labs(x="", y="", fill="Standard\nerror") +
   coord_map(ylim=range(summary_predgrid_all$mlat), xlim=range(summary_predgrid_all$mlon)) +
   theme_minimal()
 #print(p_sd_g0)
 
-ggsave(p_sd_g0, file="figures/sd_d_g0.pdf", width=7, height=9)
+ggsave(p_sd_g0, file="figures/unc_d_g0.pdf", width=7, height=9)
 
 
 ## coefficients of variation
@@ -94,7 +94,8 @@ summary_predgrid_yearly <- summary_predgrid_yearly %>%
   pivot_longer(c(avv_d, sdd_d))
 
 # name the data types correctly
-summary_predgrid_yearly$name <- factor(summary_predgrid_yearly$name, labels=c("Density","SD"))  
+summary_predgrid_yearly$name <- factor(summary_predgrid_yearly$name,
+                                       labels=c("Density", "Standard error"))  
 
 # make the plot
 p_yearly <- ggplot(summary_predgrid_yearly, aes(y=mlat, x=mlon)) +

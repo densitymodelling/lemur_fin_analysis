@@ -54,11 +54,11 @@ p_Nhat <- ggplot(plot_Nhat, aes(x=month))+
   geom_linerange(aes(ymax=upper, ymin=lower)) +
   geom_point(aes(y=Abundance)) +
   facet_wrap(~year, nrow=1, scales = "free_x") +
-  scale_x_continuous(breaks=6:12, labels=month.abb[6:12]) +
+  scale_x_continuous(breaks=6:12, labels=month.abb[6:12], expand=c(.1, .1)) +
   labs(x="", y="Abundance") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle=35, hjust=1),
-        panel.border = element_rect(colour="black", fill=NA))
+        panel.border = element_rect(colour="black", size=0.5, fill=NA))
 p_Nhat
 
 ggsave(p_Nhat, file="figures/Nhat.pdf", width=10)

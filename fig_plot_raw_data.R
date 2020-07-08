@@ -30,6 +30,10 @@ p_dat <- ggplot() +
   geom_point(aes(y=mlat, x=mlon), size=0.2, data=fin) +
   geom_point(aes(y=mlat, x=mlon), colour="#edf8b1", size=0.3, data=subset(fin, count>0)) +
   theme_minimal() +
+  theme(legend.position = "bottom",
+        legend.text = element_text(size=12),
+        legend.title = element_text(size=12),
+        axis.text = element_text(size=12)) +
   labs(x="", y="", fill="Depth") +
   coord_map(ylim = c(30.2, 48.0), xlim = c(-131.0, -117.3))
 #print(p_dat)

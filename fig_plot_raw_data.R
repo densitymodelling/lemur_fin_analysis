@@ -16,8 +16,11 @@ y <- depthdat$lat
 ind <- inSide(cce_poly, x, y)
 depthdat <- depthdat[ind,]
 
+# make some breaks
+depth_breaks <- quantile(depthdat$Depth_ETOPO1, prob=seq(0,1, len=8),na.rm=TRUE)
+
 # setup palette for plotting
-pal <- cmocean('deep')(256)
+pal <- cmocean('deep')(length(depth_breaks)+2)
 
 # map
 w <- map_data("worldHires", ylim = range(cce_poly$y), xlim = range(cce_poly$x))
@@ -25,19 +28,22 @@ w <- map_data("worldHires", ylim = range(cce_poly$y), xlim = range(cce_poly$x))
 # plot bathymetry with effort and observations on map
 p_dat <- ggplot() +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
-  geom_tile(data=depthdat, aes(x = lon180, y = lat, fill = Depth_ETOPO1)) +
-  scale_fill_gradientn(colours=pal) +
+#  geom_tile(data=depthdat, aes(x = lon180, y = lat, fill = Depth_ETOPO1)) +
+  geom_contour_filled(data=depthdat, aes(x=lon180, y=lat, z=Depth_ETOPO1),
+                      breaks=depth_breaks) +
+#  scale_fill_gradientn(colours=pal) +
+  scale_fill_discrete(type=pal) +
   geom_point(aes(y=mlat, x=mlon), size=0.2, data=fin) +
   geom_point(aes(y=mlat, x=mlon), colour="#edf8b1", size=0.3, data=subset(fin, count>0)) +
   theme_minimal() +
   theme(legend.position = "bottom",
         legend.text = element_text(size=12),
         legend.title = element_text(size=12),
-        legend.key.size = 100,
+#        legend.key.width = unit(4, "inch"),
         axis.text = element_text(size=12)) +
-  labs(x="", y="", fill="Depth") +
+  labs(x="", y="", fill="Depth\n(m)") +
   coord_map(ylim = c(30.2, 48.0), xlim = c(-131.0, -117.3))
-print(p_dat)
+#print(p_dat)
 
 ggsave(p_dat, file="figures/rawdat.pdf", width=7, height=9)
 

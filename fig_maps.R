@@ -12,55 +12,64 @@ library(dplyr)
 # get USA map for plots
 w <- map_data("worldHires", ylim = range(cce_poly$y), xlim = range(cce_poly$x))
 
+colour_cats <- c(0,0.001,.0023,.0036,.0085,.036,1)
 
 # plot mean predictions
-summary_predgrid_all$avv_d <- cut(summary_predgrid_all$avv, c(0,0.001,.0023,.0036,.0085,.036,1))
+#summary_predgrid_all$avv_d <- cut(summary_predgrid_all$avv, colour_cats)
 # remove NAs
-summary_predgrid_all <- summary_predgrid_all[!is.na(summary_predgrid_all$avv_d), ]
+#summary_predgrid_all <- summary_predgrid_all[!is.na(summary_predgrid_all$avv_d), ]
 
 p_pred <- ggplot(summary_predgrid_all, aes(y=mlat, x=mlon)) +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
-  geom_tile(aes(fill=avv_d)) +
+  #geom_tile(aes(fill=avv_d)) +
+  geom_contour_filled(aes(z=avv), breaks=colour_cats,
+                      limits=c(0,1), show.legend = TRUE) +
   geom_point(aes(y=mlat, x=mlon), data=subset(fin, count>0),
              shape = 21, colour = "black", fill = "white", size=0.75) +
   scale_fill_viridis_d() +
   labs(x="", y="", fill="Density") +
-  coord_map(ylim=range(summary_predgrid_all$mlat), xlim=range(summary_predgrid_all$mlon)) +
-  theme_minimal()
-#print(p_pred)
+  coord_map(ylim=range(summary_predgrid_all$mlat),
+            xlim=range(summary_predgrid_all$mlon)) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+print(p_pred)
 
 ggsave(p_pred, file="figures/pred_d.pdf", width=7, height=9)
 
 
-# standard deviations
-summary_predgrid_all$sdd_d <- cut(summary_predgrid_all$sdd, c(0,0.001,.0023,.0036,.0085,.036,1, 2))
+## standard deviations
+#summary_predgrid_all$sdd_d <- cut(summary_predgrid_all$sdd, colour_cats)
+#
+#p_sd <- ggplot(summary_predgrid_all, aes(y=mlat, x=mlon)) +
+#  geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
+#  geom_tile(aes(fill=sdd_d)) +
+#  geom_point(aes(y=mlat, x=mlon), data=subset(fin, count>0),
+#             shape = 21, colour = "black", fill = "white", size=0.75) +
+#  scale_fill_viridis_d() +
+#  labs(x="", y="", fill="Standard\nerror") +
+#  coord_map(ylim=range(summary_predgrid_all$mlat), xlim=range(summary_predgrid_all$mlon)) +
+#  theme_minimal()
+##print(p_sd)
 
-p_sd <- ggplot(summary_predgrid_all, aes(y=mlat, x=mlon)) +
-  geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
-  geom_tile(aes(fill=sdd_d)) +
-  geom_point(aes(y=mlat, x=mlon), data=subset(fin, count>0),
-             shape = 21, colour = "black", fill = "white", size=0.75) +
-  scale_fill_viridis_d() +
-  labs(x="", y="", fill="Standard\nerror") +
-  coord_map(ylim=range(summary_predgrid_all$mlat), xlim=range(summary_predgrid_all$mlon)) +
-  theme_minimal()
-#print(p_sd)
-
-ggsave(p_sd, file="figures/unc_d.pdf", width=7, height=9)
+#ggsave(p_sd, file="figures/unc_d.pdf", width=7, height=9)
 
 # standard deviations with g0
-summary_predgrid_all$sdd_g0_d <- cut(summary_predgrid_all$sdd_g0, c(0,0.001,.0023,.0036,.0085,.036,1, 2))
+summary_predgrid_all$sdd_g0_d <- cut(summary_predgrid_all$sdd_g0, colour_cats)
 
 p_sd_g0 <- ggplot(summary_predgrid_all, aes(y=mlat, x=mlon)) +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
-  geom_tile(aes(fill=sdd_g0_d)) +
+  #geom_tile(aes(fill=sdd_g0_d)) +
+  geom_contour_filled(aes(z=sdd_g0), breaks=colour_cats) +
   geom_point(aes(y=mlat, x=mlon), data=subset(fin, count>0),
              shape = 21, colour = "black", fill = "white", size=0.75) +
-  scale_fill_viridis_d() +
+#  scale_colour_viridis_d(position="bottom") +
+#  scale_fill_viridis_d(limits=range(colour_cats), 
+#                       position="bottom") +
+  #theme(legend.position = "bottom") +
   labs(x="", y="", fill="Standard\nerror") +
   coord_map(ylim=range(summary_predgrid_all$mlat), xlim=range(summary_predgrid_all$mlon)) +
   theme_minimal()
-#print(p_sd_g0)
+print(p_sd_g0)
 
 ggsave(p_sd_g0, file="figures/unc_d_g0.pdf", width=7, height=9)
 

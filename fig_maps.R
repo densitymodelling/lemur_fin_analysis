@@ -105,10 +105,10 @@ ggsave(p_sd_g0, file="figures/unc_d_g0.pdf", width=7, height=9)
 summary_predgrid_yearly <- summary_predgrid_yearly %>%
   # only need these columns
   #select(mlon, mlat, year, avv_d, sdd_d) %>%
-  select(mlon, mlat, year, avv, sdd) %>%
+  select(mlon, mlat, year, avv, sdd_g0) %>%
   # make a long rather than wide data.frame
   #pivot_longer(c(avv_d, sdd_d))
-  pivot_longer(c(avv, sdd))
+  pivot_longer(c(avv, sdd_g0))
 
 # name the data types correctly
 summary_predgrid_yearly$name <- factor(summary_predgrid_yearly$name,
@@ -118,7 +118,7 @@ summary_predgrid_yearly$name <- factor(summary_predgrid_yearly$name,
 p_yearly <- ggplot(summary_predgrid_yearly, aes(y=mlat, x=mlon)) +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
   #geom_tile(aes(fill=value)) +
-  geom_contour_filled(aes(z=sdd), breaks=colour_cats) +
+  geom_contour_filled(aes(z=value), breaks=colour_cats) +
   geom_point(aes(y=mlat, x=mlon), data=subset(fin, count>0),
              shape = 21, colour = "black", fill = "white", size=0.75) +
   scale_fill_viridis_d() +
@@ -127,10 +127,11 @@ p_yearly <- ggplot(summary_predgrid_yearly, aes(y=mlat, x=mlon)) +
   coord_map(ylim=range(summary_predgrid_yearly$mlat), xlim=range(summary_predgrid_yearly$mlon)) +
   theme_minimal() +
   theme(legend.position = "bottom",
+        strip.text = element_text(size=12),
         legend.text = element_text(size=12),
         legend.title = element_text(size=12),
         axis.text = element_text(size=12))
-#print(p_yearly)
+print(p_yearly)
 
 ggsave(p_yearly, file="figures/yearlies.pdf", width=10, height=9)
 

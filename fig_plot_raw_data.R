@@ -33,10 +33,11 @@ p_dat <- ggplot() +
   theme(legend.position = "bottom",
         legend.text = element_text(size=12),
         legend.title = element_text(size=12),
+        legend.key.size = 100,
         axis.text = element_text(size=12)) +
   labs(x="", y="", fill="Depth") +
   coord_map(ylim = c(30.2, 48.0), xlim = c(-131.0, -117.3))
-#print(p_dat)
+print(p_dat)
 
 ggsave(p_dat, file="figures/rawdat.pdf", width=7, height=9)
 

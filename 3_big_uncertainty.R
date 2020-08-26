@@ -29,6 +29,10 @@ big_uncertainty <- function(vp, pred_files, pred_areas, n_sims, poly, na_oob=FAL
   # storage for abundance estimates
   Nhat <- matrix(NA, nrow=length(pred_files), ncol=n_sims)
 
+
+  # generate n_sims sets of new coefficients
+  br <- rmvn(n_sims, betas, Vb)
+
   # day counter
   dayi <- 1
 
@@ -58,10 +62,8 @@ big_uncertainty <- function(vp, pred_files, pred_areas, n_sims, poly, na_oob=FAL
     # loop sampling from the posterior
     if(!quiet) pb <- txtProgressBar(0, n_sims, char=".")
     for(i in 1:n_sims){
-      # generate new coefficients
-      br <- rmvn(1, betas, Vb)
       # make a prediction and store it
-      out[,i] <- exp(Xp%*%br)
+      out[,i] <- exp(Xp%*%br[i,])
 
       # calculate Nhat for this sim/day
       Nhat[dayi, i] <- sum(out[,i] * predgrid$area, na.rm=TRUE)

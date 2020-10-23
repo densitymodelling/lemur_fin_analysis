@@ -61,7 +61,7 @@ p_Nhat <- ggplot(plot_Nhat, aes(x=month))+
         panel.border = element_rect(colour="black", size=0.5, fill=NA))
 p_Nhat
 
-ggsave(p_Nhat, file="figures/Nhat.pdf", width=10)
+ggsave(p_Nhat, file="figures/Nhat.pdf", width=10, height=5)
 
 
 

@@ -4,10 +4,6 @@
 # of Welford
 # https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Welford's_online_algorithm
 
-# using data.table::fread to make file reading faster
-library(data.table)
-
-
 source("support_scripts/prepare_preds.R")
 load("RData/0_format_aux_data.RData")
 load("RData/1_model_and_data.RData")
@@ -28,7 +24,7 @@ welford_mean_var <- function(out_files, summary_predgrid){
   for(out_file in out_files){
 
     # read-in and calculate the appropriate summaries
-    this_pred <- data.table::fread(out_file, header=TRUE, sep=",")
+    this_pred <- readRDS(out_file)
 
     this_pred <- as.data.frame(this_pred)
     # running variance calculation a la Welford
@@ -63,7 +59,7 @@ welford_mean_var <- function(out_files, summary_predgrid){
 
 ## first calculate over all time periods
 # get a list of all the output files
-all_out_files <- dir("out", pattern="_pred.csv", full.names = TRUE)
+all_out_files <- dir("out", pattern="_pred.rds", full.names = TRUE)
 
 # calculate mean and variance
 summary_predgrid_all <- welford_mean_var(all_out_files, summary_predgrid)

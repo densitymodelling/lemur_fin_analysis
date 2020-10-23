@@ -9,29 +9,24 @@
 #  vp           model (with variance propagated)
 #  pred_files   vector of file paths for prediction grids
 #  pred_areas   data.frame with areas of prediction cells
-#  n_sims       number of simulations to do per pred grid
+#  beta_sims    simulated model coefficients
 #  poly         polygon to bound the predictions
 #  na_oob       remove out of bounds values (NA values outside model range)
 #  quiet        should the function tell you what it's doing?
-big_uncertainty <- function(vp, pred_files, pred_areas, n_sims, poly, na_oob=FALSE, quiet=FALSE){
-  # extract model bits
-  # coefficients
-  betas <- coef(vp)
-  # variance-covariance matrix,
-  # corrected for smoothing parameter uncertainty
-  Vb <- vcov(vp, unconditional = TRUE)
+big_uncertainty <- function(vp, pred_files, pred_areas, beta_sims, poly, na_oob=FALSE, quiet=FALSE){
 
   if(na_oob){
     # get bounds
     covar_bnds <- get_covar_bnds(vp)
+  }else{
+    covar_bnds <- NULL
   }
-  
+
   # storage for abundance estimates
   Nhat <- matrix(NA, nrow=length(pred_files), ncol=n_sims)
 
-
-  # generate n_sims sets of new coefficients
-  br <- rmvn(n_sims, betas, Vb)
+  # n_sims is number of coefficients
+  n_sims <- nrow(beta_sims)
 
   # day counter
   dayi <- 1
@@ -54,24 +49,24 @@ big_uncertainty <- function(vp, pred_files, pred_areas, n_sims, poly, na_oob=FAL
     Xp <- predict(vp, predgrid, type="lpmatrix")
 
     # output file will have the same name as input but
-    # end in _outs.csv instead
+    # end in _outs.rds instead
     outfile <- sub(".csv", "", pred_file)
     outfile <- sub("data/roms_grids/", "", outfile)
-    outfile <- paste0("out/", outfile, "_pred.csv")
+    outfile <- paste0("out/", outfile, "_pred.rds")
 
     # loop sampling from the posterior
     if(!quiet) pb <- txtProgressBar(0, n_sims, char=".")
     for(i in 1:n_sims){
       # make a prediction and store it
-      out[,i] <- exp(Xp%*%br[i,])
+      out[,i] <- exp(Xp%*%beta_sims[i,])
 
       # calculate Nhat for this sim/day
       Nhat[dayi, i] <- sum(out[,i] * predgrid$area, na.rm=TRUE)
       if(!quiet) setTxtProgressBar(pb, i)
     }
     if(!quiet) cat("\n")
-    # write out this time period's predictions as a CSV
-    write.table(file=outfile, out, row.names = FALSE, sep=",", col.names=TRUE)
+    # write out this time period's predictions as an RDS
+    saveRDS(file=outfile, out)
 
     dayi <- dayi + 1
   } # end loop over time periods
@@ -96,9 +91,6 @@ source("support_scripts/get_covar_bnds.R")
 # get the paths to the grids
 pred_files <- dir("data/roms_grids", full.names = TRUE)
 
-# how many posterior samples?
-n_sims <- 200
-
 
 # run every third day...
 #day_ind <- seq(1, length(pred_files), by=3)
@@ -108,7 +100,8 @@ n_sims <- 200
 start_time <- Sys.time()
 # do the work!
 # things get saved to csv files in various places
-big_uncertainty(b_vp, pred_files, pred_areas, n_sims, cce_poly, na_oob=TRUE, quiet=FALSE)
+big_uncertainty(b_vp, pred_files, pred_areas, beta_sims,
+                cce_poly, na_oob=TRUE, quiet=FALSE)
 
 
 # end timer

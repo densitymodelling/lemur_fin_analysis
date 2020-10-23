@@ -23,5 +23,37 @@ vp_summ <- subset(vp_summ, Ship %in% c("MAC", "DSJ", "Mc2"))
 vp_summ <- subset(vp_summ, SppMax=="074")
 vp_summ <- unique(vp_summ)
 
+
+# generate the random betas here and save for later
+
+# number of simulations
+n_sims <- 1000
+
+# three options:
+
+# 1. multivariate normal assumption
+# (can work for well behaved models)
+#beta_sims <- rmvn(n_sims, coef(b_vp), vcov(b_vp, unconditional = TRUE))
+
+# 2. importance sampling weights
+# (better for bad models, can still have problems)
+#source("support_scripts/likelihood_tools.R")
+#source("support_scripts/ttools.R")
+#source("support_scripts/importance.R")
+#beta_sims <- gam.imp(ns=n_sims, b_vp)
+#
+## need to save the weights too!
+#imp_weights <- beta_sims$wts
+#beta_sims <- beta_sims$br
+
+# 3. Metropolis-Hastings
+# (should work but requires some fiddling)
+source("support_scripts/likelihood_tools.R")
+source("support_scripts/ttools.R")
+source("support_scripts/gam.mh_fix.R")
+beta_sims <- gam.mh(b_vp, ns=n_sims, burn=2000, rw.scale=0.05)$br
+
+
+
 # save the varprop'd model
-save(b_vp, file="RData/2_prop_that_var.RData")
+save(b_vp, beta_sims, file="RData/2_prop_that_var.RData")

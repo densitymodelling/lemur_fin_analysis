@@ -22,11 +22,11 @@ big_uncertainty <- function(vp, pred_files, pred_areas, beta_sims, poly, na_oob=
     covar_bnds <- NULL
   }
 
-  # storage for abundance estimates
-  Nhat <- matrix(NA, nrow=length(pred_files), ncol=n_sims)
-
   # n_sims is number of coefficients
   n_sims <- nrow(beta_sims)
+  
+  # storage for abundance estimates
+  Nhat <- matrix(NA, nrow=length(pred_files), ncol=n_sims)
 
   # day counter
   dayi <- 1

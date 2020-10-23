@@ -51,7 +51,7 @@ n_sims <- 1000
 source("support_scripts/likelihood_tools.R")
 source("support_scripts/ttools.R")
 source("support_scripts/gam.mh_fix.R")
-beta_sims <- gam.mh(b_vp, ns=n_sims, burn=2000, rw.scale=0.05)$br
+beta_sims <- gam.mh(b_vp, ns=n_sims, burn=2000, rw.scale=0.05)$bs
 
 
 

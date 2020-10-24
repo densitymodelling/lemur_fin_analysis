@@ -14,9 +14,9 @@ load("RData/1_model_and_data.RData")
 load("RData/4_process_uncertainty.RData")
 
 # load the set of dates, which we'll use for both plots
-out_pred_files <- dir("out", pattern="_pred.csv", full.names = TRUE)
+out_pred_files <- dir("out", pattern="_pred.rds", full.names = TRUE)
 dates <- sub("out/CCE_0.1deg_", "", out_pred_files)
-dates <- sub("_pred.csv","",dates)
+dates <- sub("_pred.rds","",dates)
 dates <- ymd(dates)
 
 # Nhat time series

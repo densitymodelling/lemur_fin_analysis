@@ -119,3 +119,6 @@ ggsave(nadeem_comp, file="figures/nadeem_comp.pdf", width=8, height=5)
 
 
 
+
+# save data for later
+save(yearlies, plot_Nhat, file="RData/Nhat_plot_data.RData")

@@ -130,4 +130,4 @@ qq.gam(b, rep=200)
 dsm::rqgam.check(b)
 
 # save what we need later
-save(b, fin, g0, g0_CV, file="RData/1_model_and_data.RData")
+save(b, fin, g0, g0_CV, maxdf, spline2use, file="RData/1_model_and_data.RData")

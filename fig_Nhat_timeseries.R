@@ -20,11 +20,9 @@ dates <- sub("_pred.rds","",dates)
 dates <- ymd(dates)
 
 # Nhat time series
-
 Nhat <- read.csv("out/Nhat_ests.csv")
 Nhat$X <- NULL
 Nhat2 <- Nhat
-
 
 Nhat$date <- dates
 Nhat <- Nhat %>%
@@ -40,8 +38,6 @@ plot_Nhat <- Nhat %>%
   # make the summaries
   summarize(Abundance = mean(value, na.rm=TRUE),
             se        = sqrt(var(value, na.rm=TRUE))) %>%
-            #upper     = quantile(value, probs=0.975, na.rm=TRUE),
-            #lower     = quantile(value, probs=0.025, na.rm=TRUE))
   mutate(CV    = sqrt((se/Abundance)^2 + g0_CV^2),
          lower = qlnorm(0.05/2, log(Abundance) - 0.5*log(CV^2+1),
                         sqrt(log(CV^2+1))),
@@ -49,8 +45,6 @@ plot_Nhat <- Nhat %>%
                         sqrt(log(CV^2+1))))
 
 p_Nhat <- ggplot(plot_Nhat, aes(x=month))+
-#  geom_ribbon(aes(ymax=upper, ymin=lower), fill="lightgrey") +
-#  geom_line(aes(y=Abundance)) +
   geom_linerange(aes(ymax=upper, ymin=lower)) +
   geom_point(aes(y=Abundance)) +
   facet_wrap(~year, nrow=1, scales = "free_x") +
@@ -64,9 +58,7 @@ p_Nhat
 ggsave(p_Nhat, file="figures/Nhat.pdf", width=10, height=5)
 
 
-
 # Yearlies for comparison with Nadeem
-#nadeem_barlow <- read.csv("data/nadeem2016_barlow.csv")
 nadeem_direct <- read.csv("data/nadeem2016_direct.csv")
 moore <- read.csv("data/moore2011.csv")
 
@@ -88,10 +80,6 @@ yearlies <- Nhat_long %>%
             upper95 = quantile(Abundance, 0.975))
 
 yearlies$model <- "This article"
-#nadeem_barlow$model <- "Nadeem (Barlow g(0))"
-#nadeem_barlow$CV <- NULL
-#nadeem_barlow$Mode <- NULL
-#nadeem_direct$model <- "Nadeem (direct g(0))"
 nadeem_direct$model <- "Nadeem et al. (2016)"
 nadeem_direct$CV <- NULL
 nadeem_direct$Mode <- NULL
@@ -101,24 +89,16 @@ moore$Mode <- NULL
 moore$perc20 <- NA
 
 
-#yearlies <- rbind(nadeem_direct, nadeem_barlow, moore, as.data.frame(yearlies))
 yearlies <- rbind(nadeem_direct, moore, as.data.frame(yearlies))
 
 nadeem_comp <- ggplot(yearlies, aes(x=Year)) +
   geom_point(aes(y=Mean, colour=model),position = position_dodge(width = 0.9)) +
-#  geom_point(aes(y=perc20, colour=model), pch=4, size=3,position = position_dodge(width = 0.9)) +
   geom_linerange(aes(ymin=lower95, ymax=upper95, colour=model),position = position_dodge(width = 0.9)) +
   labs(x="Year", y="Abundance", fill="Estimate", colour="Model") +
   scale_x_continuous(breaks=unique(yearlies$Year)) +
   theme_minimal()
 
-#print(nadeem_comp)
-
 ggsave(nadeem_comp, file="figures/nadeem_comp.pdf", width=8, height=5)
-
-
-
-
 
 # save data for later
 save(yearlies, plot_Nhat, file="RData/Nhat_plot_data.RData")

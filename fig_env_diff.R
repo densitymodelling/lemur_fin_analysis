@@ -29,7 +29,6 @@ summary_predgrid_diff <- summary_predgrid_diff[!is.na(summary_predgrid_diff$sedi
 
 
 ## yearlies
-
 summary_predgrid_yearly_diff$avvdiff <- summary_predgrid_yearly_all$avv -
                                 summary_predgrid_yearly_env_only$avv
 summary_predgrid_yearly_diff$sediff <- summary_predgrid_yearly_all$sdd_g0 -
@@ -39,25 +38,19 @@ summary_predgrid_yearly_diff <- summary_predgrid_yearly_diff[!is.na(summary_pred
 # get USA map for plots
 w <- map_data("worldHires", ylim = range(cce_poly$y), xlim = range(cce_poly$x))
 
-
-
 ## differences standard deviations
 p_sd_diff <- ggplot(summary_predgrid_diff, aes(y=mlat, x=mlon)) +
   geom_polygon(data=w, aes(x=long, y=lat, group=group), fill="grey80")+
   geom_tile(aes(fill=sediff)) +
-#  scale_fill_viridis_c(trans="log", breaks=c(1e-4, 0.05, 0.14), option="A") +
   scale_fill_gradient2(limits=c(0, 0.145)) +
   labs(x="", y="", fill="Difference in\nstandard\nerror") +
   coord_map(ylim=range(summary_predgrid_all$mlat),
             xlim=range(summary_predgrid_all$mlon)) +
-  #coord_equal(ylim=range(summary_predgrid_all$mlat),
-  #          xlim=range(summary_predgrid_all$mlon)) +
   theme_minimal() +
   theme(legend.position = "bottom",
         legend.text = element_text(size=12),
         legend.title = element_text(size=12),
         axis.text = element_text(size=12))
-#print(p_sd_diff)
 
 ggsave(p_sd_diff, file="figures/diff_unc_d_g0.pdf", width=7, height=9)
 
@@ -65,11 +58,8 @@ p_yearly_sd_diff <- ggplot(summary_predgrid_yearly_diff, aes(y=mlat, x=mlon)) +
   geom_polygon(data=w, aes(x=long, y=lat, group=group), fill="grey80")+
   geom_tile(aes(fill=sediff)) +
   scale_fill_gradient2(limits=c(0, 0.323)) +
-  #scale_fill_viridis_c(trans="log", breaks=c(1e-4, 0.05, 0.14), option="A") +
   facet_grid(~year) +
   labs(x="", y="", fill="Difference in\nstandard\nerror") +
-  #coord_equal(ylim=range(summary_predgrid_all$mlat),
-  #          xlim=range(summary_predgrid_all$mlon)) +
   coord_map(ylim=range(summary_predgrid_all$mlat),
             xlim=range(summary_predgrid_all$mlon)) +
   theme_minimal() +
@@ -77,9 +67,5 @@ p_yearly_sd_diff <- ggplot(summary_predgrid_yearly_diff, aes(y=mlat, x=mlon)) +
         legend.text = element_text(size=12),
         legend.title = element_text(size=12),
         axis.text = element_text(size=12))
-#print(p_yearly_sd_diff)
 
 ggsave(p_yearly_sd_diff, file="figures/yearly_diff_unc_d.pdf", width=7, height=4)
-
-
-

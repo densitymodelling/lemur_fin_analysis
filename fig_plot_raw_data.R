@@ -28,10 +28,8 @@ w <- map_data("worldHires", ylim = range(cce_poly$y), xlim = range(cce_poly$x))
 # plot bathymetry with effort and observations on map
 p_dat <- ggplot() +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
-#  geom_tile(data=depthdat, aes(x = lon180, y = lat, fill = Depth_ETOPO1)) +
   geom_contour_filled(data=depthdat, aes(x=lon180, y=lat, z=Depth_ETOPO1),
                       breaks=depth_breaks) +
-#  scale_fill_gradientn(colours=pal) +
   scale_fill_discrete(type=pal) +
   geom_point(aes(y=mlat, x=mlon), size=0.2, data=fin) +
   geom_point(aes(y=mlat, x=mlon), colour="#d95f0e", size=0.4,
@@ -40,7 +38,6 @@ p_dat <- ggplot() +
   theme(legend.position = "bottom",
         legend.text = element_text(size=12),
         legend.title = element_text(size=12),
-#        legend.key.width = unit(4, "inch"),
         axis.text = element_text(size=12)) +
   labs(x="", y="", fill="Depth\n(m)") +
   coord_map(ylim = c(30.2, 48.0), xlim = c(-131.0, -117.3))
@@ -50,13 +47,10 @@ ggsave(p_dat, file="figures/rawdat.pdf", width=7, height=9)
 
 
 # make another plot for figure that has e.g. prediction grid
-
 source("support_scripts/prepare_preds.R")
-
 pp <- prepare_preds("data/CCE_0.1deg_2008-09-13.csv", cce_poly, pred_areas)
 
 # just plot mixed layer depth
-
 p_ild <- ggplot() +
   geom_polygon(data = w, aes(x = long, y = lat, group = group), fill = "grey80") +
   geom_tile(data=pp, aes(x = mlon, y = mlat, fill = ild))+

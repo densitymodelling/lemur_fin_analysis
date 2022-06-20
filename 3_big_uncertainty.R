@@ -24,7 +24,7 @@ big_uncertainty <- function(vp, pred_files, pred_areas, beta_sims, poly, na_oob=
 
   # n_sims is number of coefficients
   n_sims <- nrow(beta_sims)
-  
+
   # storage for abundance estimates
   Nhat <- matrix(NA, nrow=length(pred_files), ncol=n_sims)
 
@@ -91,18 +91,12 @@ source("support_scripts/get_covar_bnds.R")
 # get the paths to the grids
 pred_files <- dir("data/roms_grids", full.names = TRUE)
 
-
-# run every third day...
-#day_ind <- seq(1, length(pred_files), by=3)
-#pred_files <- pred_files[day_ind]
-
 # start timer
 start_time <- Sys.time()
 # do the work!
 # things get saved to csv files in various places
 big_uncertainty(b_vp, pred_files, pred_areas, beta_sims,
                 cce_poly, na_oob=TRUE, quiet=FALSE)
-
 
 # end timer
 end_time <- Sys.time()

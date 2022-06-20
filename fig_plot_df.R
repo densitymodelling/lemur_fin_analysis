@@ -10,7 +10,6 @@ load("RData/1_model_and_data.RData")
 
 fin_ddf <- b$ddf
 
-
 pdf(file="figures/detection_functions.pdf", width=12, height=10)
 
 par(mfrow=c(2,2))
@@ -21,7 +20,7 @@ par(mfrow=c(2,2))
 #4947    0    0 2488 5384    0 
 fix_Ship <- "Mc2"
 fix_Vis <- quantile(fin$Vis, 0.5)
-fix_LnTotSS <- log(1)#quantile(fin$LnTotSS, 0.5)
+fix_LnTotSS <- log(1)
 fix_Beauf <- quantile(fin$Beauf, 0.5)
 
 # by ship

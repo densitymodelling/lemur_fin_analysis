@@ -47,14 +47,12 @@ n_sims <- 1000
 #beta_sims <- beta_sims$br
 
 # 3. Metropolis-Hastings
-# (should work but requires some fiddling)
+# (should work but requires some fiddling with rw.scale parameters to ensure
+#  that acceptance rate is good)
 source("support_scripts/likelihood_tools.R")
 source("support_scripts/ttools.R")
-source("support_scripts/gam.mh_fix.R")
 set.seed(1234)
 beta_sims <- gam.mh(b_vp, ns=n_sims, burn=2000, rw.scale=0.05)$bs
-
-
 
 # save the varprop'd model
 save(b_vp, beta_sims, file="RData/2_prop_that_var.RData")

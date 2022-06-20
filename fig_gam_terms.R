@@ -19,9 +19,5 @@ plot(b_vp, select=5, rug=TRUE, shade=TRUE, xlab="Year")
 plot(b_vp, select=6, scheme=2, asp=1, xlab="Longitude", ylab="Latitude",
      main="")
 
-
 # close device, writing the PDF
 dev.off()
-
-
-

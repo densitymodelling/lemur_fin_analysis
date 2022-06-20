@@ -34,7 +34,8 @@ p_dat <- ggplot() +
 #  scale_fill_gradientn(colours=pal) +
   scale_fill_discrete(type=pal) +
   geom_point(aes(y=mlat, x=mlon), size=0.2, data=fin) +
-  geom_point(aes(y=mlat, x=mlon), colour="#edf8b1", size=0.3, data=subset(fin, count>0)) +
+  geom_point(aes(y=mlat, x=mlon), colour="#d95f0e", size=0.4,
+             data=subset(fin, count>0)) +
   theme_minimal() +
   theme(legend.position = "bottom",
         legend.text = element_text(size=12),
@@ -43,7 +44,7 @@ p_dat <- ggplot() +
         axis.text = element_text(size=12)) +
   labs(x="", y="", fill="Depth\n(m)") +
   coord_map(ylim = c(30.2, 48.0), xlim = c(-131.0, -117.3))
-#print(p_dat)
+print(p_dat)
 
 ggsave(p_dat, file="figures/rawdat.pdf", width=7, height=9)
 
